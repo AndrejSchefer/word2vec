@@ -1,0 +1,193 @@
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
+        <!--   <script  src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
+        <script  src="jquery.js"></script>
+        <script>
+
+            var corpus = [
+                'king is a strong man',
+                'queen is a wise woman',
+                'boy is a young man',
+                'girl is a young woman',
+                'prince is a young king',
+                'princess is a young queen',
+                'man is strong',
+                'woman is pretty',
+                'prince is a boy will be king',
+                'princess is a girl will be queen'];
+
+            var corpus = [
+                'king is a  man',
+                'king is a strong man',
+                'queen is a woman'
+            ]
+            function remove_stop_words(corpus) {
+                var stop_words = ['is', ' a ', 'will', 'be'];
+                var results = [];
+
+                for (var i = 0; i < corpus.length; i++) {
+                    var res = corpus[i];
+                    for (var j = 0; j < stop_words.length; j++) {
+                        res = res.replace(stop_words[j], ",");
+                        res = res.replace(",", " ");
+                    }
+                    dataW = [];
+                    $.each(res.split(" "), function (e, v) {
+                        if (v !== "") {
+                            dataW.push(v);
+                        }
+                    });
+                    results.push(dataW);
+
+                }
+                return results;
+            }
+
+            var sentences = remove_stop_words(corpus);
+
+            function makeLabels(sentences) {
+                // Y - Achse
+                var y_achse = 1;
+                var data = [];
+                for (var y = 0; y < sentences.length; y++) {
+                    var x_achse = 1;
+
+                    for (var x = 0; x < sentences[y].length; x++) {
+                        data[sentences[y][x]] = []
+                        data[sentences[y][x]][0] = y_achse;
+                        data[sentences[y][x]][1] = x_achse;
+                        x_achse++
+                    }
+                    y_achse++;
+                }
+                return data;
+            }
+
+            function uniquWord(corpus) {
+                var word = [];
+                var x = 0;
+                for (var i = 0; i < corpus.length; i++) {
+                    for (var j = 0; j < corpus[i].length; j++) {
+                        if (word.indexOf(corpus[i][j]) === -1) {
+                            word[x] = corpus[i][j];
+                            x++;
+                        }
+                    }
+                }
+                return word;
+            }
+
+            words = uniquWord(sentences);
+
+            function oneHot(words) {
+                var data = [];
+                var x = 1;
+                $.each(words, function (key, value) {
+                    data[value] = [];
+                    data[value]['text'] = value;
+                    data[value]['tens'] = [];
+                    for (var i = 1; i <= words.length; i++) {
+                        if (i === x) {
+                            data[value]['tens'].push(1);
+                        } else {
+                            data[value]['tens'].push(0);
+                        }
+                    }
+                    x++;
+                });
+                //console.log(data)
+                return data;
+            }
+
+            var bineryWords = oneHot(words);
+            //var labelA = tf.oneHot(tf.tensor1d(Object.keys(words), 'int32'), words.length).print();
+
+            function findNeighnorWords(sentences, bineryWords, labels) {
+                //console.log(sentences);    
+                var data = [];
+                x = 0;
+                for (var i = 0; i < sentences.length; i++) {
+                    for (var idx = 0; idx < sentences[i].length; idx++) {
+                        word = sentences[i][idx];
+                        for (var index = 0; index < sentences[i].length; index++) {
+                            neighbor = sentences[i][index];
+                            if (word !== neighbor) {
+                                console.log(word);
+                                
+
+                                data[x] = [];
+                                data[x]['word'] = word;
+                                data[x]['data'] = bineryWords[word]['tens'];
+                                data[x]['label'] = labels[word] ;
+                               
+                                x++;
+                            }
+                        }
+                    }
+                }
+                console.log(data);
+                return data;
+            }
+
+            var fnw = findNeighnorWords(sentences, bineryWords, makeLabels(sentences));
+            //console.log(fnw);
+            const model = tf.sequential();
+
+
+            const hidden = tf.layers.dense({
+                units: 2, // Number of nodes in the hidden Layer
+                inputShape: [12], // Input Layer with 2 nodes
+                activation: "softmax"
+            });
+            model.add(hidden);
+
+            const output = tf.layers.dense({
+                units: 2,
+                activation: "sigmoid"
+            });
+
+            model.add(output);
+
+
+            model.compile({
+                loss: 'meanSquaredError',
+                optimizer: 'sgd'
+            });
+
+            const xs = [];
+            const ys = [];
+
+            $.each(fnw, function (key, value) {
+                xs.push(fnw[key]['data']);
+                ys.push(fnw[key]['label']);
+            });
+
+            //   tf.tensor2d(xs).print();
+            //    tf.tensor2d(ys).print();
+
+            async function train() {
+                console.log('Train');
+
+                for (var i = 1; i < 20; i++) {
+                    const response = await model.fit(tf.tensor2d(xs), tf.tensor2d(ys), {
+                        shuffle: true,
+                        epochs: 20
+                    });
+
+                    //console.log(response);
+                    //console.log(i + " " + response.history.loss[0]);
+                }
+            }
+            train().then(function () {
+                console.log("training complete");
+                var outputPredict = model.predict(tf.tensor2d(xs));
+                //outputPredict.print();
+            }
+            );
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

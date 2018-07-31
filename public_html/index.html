@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <!-- Load TensorFlow.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
+
+        <!-- Place your code in the script tag below. You can also use an external .js file -->
+        <script>
+            const buildCnn = function (data) {
+
+                return new Promise(function (resolve, functions) {
+                    const model = tf.sequential();
+
+                    model.add(tf.layers.conv1d({
+                        inputShape: [data.dates.length, 1],
+                        kernelSize: 100,
+                        filter: 8,
+                        strides: 2, // Schrittweite für die Wahrnehmungsfelder
+                        activation: 'relu',
+                        kernelInitializerd: 'VarianceScaling'
+                    }));
+
+                    model.add(tf.layers.maxPooling1d({
+                        poolSize: [500],
+                        strides: [2]
+                    }));
+
+                    model.add(tf.layers.conv1d({
+                        inputShape: [data.dates.length, 1],
+                        kernelSize: 100,
+                        filter: 8,
+                        strides: 2,
+                        activation: 'relu',
+                        kernelInitializerd: 'VarianceScaling'
+                    }));
+
+                    model.add(tf.layers.maxPooling1d({
+                        poolSize: [500],
+                        strides: [2]
+                    }));
+
+                    model.add(tf.layers.dense({
+                        units: 10,
+                        kernelInitializerd: 'VarianceScaling',
+                        activation: 'softmax'
+                    }));
+                    
+                    return resolve({
+                        'model':model,
+                        'data': data
+                    });
+                   
+                });
+            };
+        </script>
+    </head>
+
+    <body>
+    </body>
+</html>
