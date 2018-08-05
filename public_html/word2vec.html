@@ -4,6 +4,12 @@
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
         <!--   <script  src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
         <script  src="jquery.js"></script>
+
+    </head>
+    <body>
+        <div class="loss">
+            loss
+        </div>
         <script>
 
             var corpus = [
@@ -19,12 +25,14 @@
                 'princess is a girl will be queen'];
 
             var corpus = [
-                'king is a  man',
-                'king is a strong man',
-                'queen is a woman'
-            ]
+                'king man',
+                'prince  man',
+                'queen woman',
+                'princess woman',
+            ];
+
             function remove_stop_words(corpus) {
-                var stop_words = ['is', ' a ', 'will', 'be'];
+                var stop_words = ['is', ' a ', 'will', ' be '];
                 var results = [];
 
                 for (var i = 0; i < corpus.length; i++) {
@@ -46,7 +54,6 @@
             }
 
             var sentences = remove_stop_words(corpus);
-
             function makeLabels(sentences) {
                 // Y - Achse
                 var y_achse = 1;
@@ -102,9 +109,8 @@
             }
 
             var bineryWords = oneHot(words);
-            //var labelA = tf.oneHot(tf.tensor1d(Object.keys(words), 'int32'), words.length).print();
 
-            function findNeighnorWords(sentences, bineryWords, labels) {
+            function findNeighborWords(sentences, bineryWords, labels) {
                 //console.log(sentences);    
                 var data = [];
                 x = 0;
@@ -114,42 +120,43 @@
                         for (var index = 0; index < sentences[i].length; index++) {
                             neighbor = sentences[i][index];
                             if (word !== neighbor) {
-                                console.log(word);
-                                
-
                                 data[x] = [];
+                                //console.log(word+' '+bineryWords[word]['tens']+' '+ neighbor+' '+bineryWords[neighbor]['tens']);
                                 data[x]['word'] = word;
-                                data[x]['data'] = bineryWords[word]['tens'];
-                                data[x]['label'] = labels[word] ;
-                               
+                                data[x]['wordEncode'] = bineryWords[word]['tens'];
+                                data[x]['neighbor'] = neighbor;
+                                data[x]['neighborEncode'] = bineryWords[neighbor]['tens'];
+                                //console.log(data[next]);
                                 x++;
                             }
                         }
                     }
                 }
-                console.log(data);
+                //console.log(data);
                 return data;
             }
 
-            var fnw = findNeighnorWords(sentences, bineryWords, makeLabels(sentences));
-            //console.log(fnw);
+
+            var fnw = findNeighborWords(sentences, bineryWords, makeLabels(sentences));
+            console.log(fnw);
+            console.log(fnw[0]['wordEncode'].length);
+            var encodeNumberLength = fnw[0]['wordEncode'].length;
             const model = tf.sequential();
 
 
             const hidden = tf.layers.dense({
                 units: 2, // Number of nodes in the hidden Layer
-                inputShape: [12], // Input Layer with 2 nodes
+                inputShape: [encodeNumberLength], // Input Layer with 2 nodes
                 activation: "softmax"
             });
             model.add(hidden);
 
             const output = tf.layers.dense({
-                units: 2,
-                activation: "sigmoid"
+                units: encodeNumberLength,
+                activation: "softmax"
             });
 
             model.add(output);
-
 
             model.compile({
                 loss: 'meanSquaredError',
@@ -160,34 +167,37 @@
             const ys = [];
 
             $.each(fnw, function (key, value) {
-                xs.push(fnw[key]['data']);
-                ys.push(fnw[key]['label']);
+                xs.push(fnw[key]['wordEncode']);
+                ys.push(fnw[key]['neighborEncode']);
             });
 
-            //   tf.tensor2d(xs).print();
-            //    tf.tensor2d(ys).print();
+            tf.tensor2d(xs).print();
+            tf.tensor2d(ys).print();
 
             async function train() {
                 console.log('Train');
 
-                for (var i = 1; i < 20; i++) {
+                for (var i = 1; i < 200; i++) {
+                    $('.loss').append('test ' + i);
                     const response = await model.fit(tf.tensor2d(xs), tf.tensor2d(ys), {
                         shuffle: true,
                         epochs: 20
                     });
 
-                    //console.log(response);
-                    //console.log(i + " " + response.history.loss[0]);
+                    $('.loss').append('<div>' + response.history.loss[0] + '</div>');
+
+                    //                  console.log(response);
+                    //   console.log(i + " " + response.history.loss[0]);
                 }
             }
+
             train().then(function () {
                 console.log("training complete");
-                var outputPredict = model.predict(tf.tensor2d(xs));
-                //outputPredict.print();
-            }
-            );
+                var outputPredict = model.predict(tf.tensor2d([[1, 0, 0, 0, 0, 0]]));
+                outputPredict.print();
+                //var outputPredict = model.predict(tf.tensor2d([[0, 1, 0, 0]]));
+              //  outputPredict.print();
+            });
         </script>
-    </head>
-    <body>
     </body>
 </html>
