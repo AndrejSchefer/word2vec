@@ -3,350 +3,74 @@
         <title>TODO supply a title</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" >
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
-        <script  src="jquery.js"></script>
+        <script src="js/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
         <style>
             .wrapper{
                 width: 1200px;
-                margin: 0 auto
+                margin: 0 auto;
+                padding: 20px
+            }
+            textarea.text{
+                height: 300px
             }
         </style>
     </head>
     <body>
         <div class="wrapper">
-
             <h1>Word2Vac</h1>
+            <div class="form">
+                <h2>Konfiguration</h2>
+                <div class="input-group mb-3">
+                    <input type="text" value="100" class="form-control" id="epochs">
+                    <div class="input-group-append">
+                        <span  class="input-group-text" >epochen</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Text</span>
+                    </div>
+                    <textarea class="text form-control" aria-label="With textarea">
+Koenig ist ein Mann.
+Koenigen ist eine Frau.
+                    </textarea>
+                </div>
+                <input class="btn btn-success learn" value="Learn" type="button">
+                <div class="status"></div>
+            </div>
+
             <canvas id="canvas"></canvas>
 
             <table class="table table-striped wordCordinaten">
             </table>
-            <h1>oneHot</h1>
-            <table class="table table-striped oneHot">
+            <div id="oneHot">
+                <h1>oneHot</h1>
+                <table class="table table-striped oneHot">
+                </table>
+            </div>
+            <div id="oneHot">
+                <h1>Nachbar</h1>
+                <table class="table table-striped data">
 
-            </table>
-
-            <h1>Nachbar</h1>
-            <table class="table table-striped data">
-
-            </table>
-            <div class="loss">
-                loss
+                </table>
+                <div class="loss">
+                    loss
+                </div>
             </div>
         </div>
-        <script>
+        <script src="js/makeATensorflowModel.js"></script>
 
-            function scatter(scatterChartData) {
-                console.log(scatterChartData);
-
-            }
-
-            var corpus = [
-                'king is a strong man',
-                'queen is a wise woman',
-                'boy is a young man',
-                'girl is a young woman',
-                'prince is a young king',
-                'princess is a young queen',
-                'man is strong',
-                'woman is pretty',
-                'prince is a boy will be king',
-                'princess is a girl will be queen'];
-            /*
-             var corpus = [
-             'king man',
-             'prince  man',
-             'prince is a young king',
-             'queen woman',
-             'princess woman'
-             ];
-             
-             var corpus = [
-             'Implementierungskenntnisse im Bereich der objektorientierten Programmierung unter Java / JEE',
-             'Erfahrungen mit relationalen Datenbanken' ,
-             'Modellierungskenntnisse mit UML',
-             'Expertise auf dem Gebiet HTML5/CSS3 und REST/JSON Kenntnisse'
-             ];
-             
-             
-             var corpus = [
-             'king король',
-             'prince  prinz',
-             'princess woman'
-             ];
-             
-             */
-            function remove_stop_words(corpus) {
-                var stop_words = [' is', ' a ', 'will', ' be ', ' im', ' der', ' / ', ' mit ', ' aus ', ' dem ', ' und', ' auf ', ' unter '];
-                var results = [];
-                for (var i = 0; i < corpus.length; i++) {
-                    var res = corpus[i];
-                    for (var j = 0; j < stop_words.length; j++) {
-                        res = res.replace(stop_words[j], ",");
-                        res = res.replace(",", " ");
-                    }
-                    dataW = [];
-                    $.each(res.split(" "), function (e, v) {
-                        if (v !== "") {
-                            dataW.push(v);
-                        }
-                    });
-                    results.push(dataW);
-                }
-                return results;
-            }
-
-            var sentences = remove_stop_words(corpus);
-            function makeLabels(sentences) {
-                // Y - Achse
-                var y_achse = 1;
-                var data = [];
-                for (var y = 0; y < sentences.length; y++) {
-                    var x_achse = 1;
-                    for (var x = 0; x < sentences[y].length; x++) {
-                        data[sentences[y][x]] = []
-                        data[sentences[y][x]][0] = y_achse;
-                        data[sentences[y][x]][1] = x_achse;
-                        x_achse++
-                    }
-                    y_achse++;
-                }
-                return data;
-            }
-
-            function uniquWord(corpus) {
-                var word = [];
-                var x = 0;
-                for (var i = 0; i < corpus.length; i++) {
-                    for (var j = 0; j < corpus[i].length; j++) {
-                        if (word.indexOf(corpus[i][j]) === -1) {
-                            word[x] = corpus[i][j];
-                            x++;
-                        }
-                    }
-                }
-                return word;
-            }
-
-            words = uniquWord(sentences);
-            function oneHot(words) {
-                var data = [];
-                var x = 1;
-                $.each(words, function (key, value) {
-                    data[value] = [];
-                    data[value]['text'] = value;
-                    data[value]['tens'] = [];
-                    for (var i = 1; i <= words.length; i++) {
-                        if (i === x) {
-                            data[value]['tens'].push(1);
-                        } else {
-                            data[value]['tens'].push(0);
-                        }
-                    }
-                    var table = '<tr><td>' + data[value]['text'] + '</td><td> ' + data[value]['tens'] + '</td></tr>';
-                    $('.oneHot').append(table);
-                    x++;
-                });
-                return data;
-            }
-
-            var bineryWords = oneHot(words);
-            $.each(bineryWords, function (key, value) {
-                console.log(key);
-            });
-            function findNeighborWords(sentences, bineryWords, labels) {
-                //console.log(sentences);    
-                var data = [];
-                x = 0;
-                for (var i = 0; i < sentences.length; i++) {
-                    for (var idx = 0; idx < sentences[i].length; idx++) {
-                        word = sentences[i][idx];
-                        for (var index = 0; index < sentences[i].length; index++) {
-                            neighbor = sentences[i][index];
-                            if (word !== neighbor) {
-                                data[x] = [];
-                                var table = '<tr><td>' + word + '</td><td>' + bineryWords[word]['tens'] + '</td><td>' + neighbor + '</td><td> ' + bineryWords[neighbor]['tens'] + '</td></tr>';
-                                $('.data').append(table);
-                                data[x]['word'] = word;
-                                data[x]['wordEncode'] = bineryWords[word]['tens'];
-                                data[x]['neighbor'] = neighbor;
-                                data[x]['neighborEncode'] = bineryWords[neighbor]['tens'];
-                                //console.log(data[next]);
-                                x++;
-                            }
-                        }
-                    }
-                }
-                //console.log(data);
-                return data;
-            }
-
-
-            var fnw = findNeighborWords(sentences, bineryWords, makeLabels(sentences));
-            //console.log(fnw);
-            //console.log(fnw[0]['wordEncode'].length);
-            var encodeNumberLength = fnw[0]['wordEncode'].length;
-            const model = tf.sequential();
-            const hidden = tf.layers.dense({
-                units: 2, // Number of nodes in the hidden Layer
-                inputShape: [encodeNumberLength], // Input Layer with 2 nodes
-                activation: "softmax"
-            });
-            model.add(hidden);
-            const output = tf.layers.dense({
-                units: encodeNumberLength,
-                activation: "softmax"
-            });
-            model.add(output);
-            model.compile({
-                loss: 'meanSquaredError',
-                optimizer: 'sgd'
-            });
-            const xs = [];
-            const ys = [];
-            $.each(fnw, function (key, value) {
-                xs.push(fnw[key]['wordEncode']);
-                ys.push(fnw[key]['neighborEncode']);
-            });
-            
-            //tf.tensor2d(xs).print();
-            //tf.tensor2d(ys).print();
-
-            async function train() {
-                console.log('Train');
-                for (var i = 1; i < 10; i++) {
-                    $('.loss').append('test ' + i);
-                    const response = await model.fit(tf.tensor2d(xs), tf.tensor2d(ys), {
-                        shuffle: true,
-                        epochs: 20
-                    });
-                    $('.loss').append('<div>' + response.history.loss[0] + '</div>');
-                }
-            }
-
-            train().then(function () {
-                console.log("training complete");
-                var outputPredict = model.predict(tf.tensor2d([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]));
-
-                async function myTensorTable(myDiv, myOutTensor, myCols, myTitle) {
-
-                    const myOutput = await myOutTensor.data()
-                    var wordCord = [];
-                    x = 1;
-                    y = 0;
-                    cord = [];
-                    cord[y] = [];
-                    for (myCount = 0; myCount <= myOutTensor.size - 1; myCount++) {
-                        cord[y][x] = myOutput[myCount];
-                        x++;
-                        if (myCount % myCols == myCols - 1) {
-                            x = 1;
-                            y++;
-                            cord[y] = [];
-                        }
-                    }
-                    return cord;
-                }
-                w = myTensorTable('test', model.getWeights()[0], 2, 'v ').then(function (data) {
-                    //console.log(data);
-                    x = 0;
-                    var w2b = [];
-                    for (i in bineryWords) {
-                        w2b[i] = [];
-                        w2b[i]['x'] = 0;
-                        w2b[i]['y'] = 0;
-
-                        for (var index = 0, max = data[x].length; index < max; index++) {
-                            if (data[x][index] !== undefined) {
-                                w2b[i]['x'] = data[x][1];
-                                w2b[i]['y'] = data[x][2];
-                            }
-                        }
-                        x++;
-                    }
-
-                    return w2b;
-                });
-
-                c = ['#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#17a2b8']
-                scatterChartData = [];
-                w.then(function (data) {
-                    //console.log(data);
-                    cx = 0;
-                    for (i in data) {
-
-                        x = data[i]['x'];
-                        y = data[i]['y'];
-                        scatterChartData.push({
-                            label: i,
-                            borderColor: '#000',
-                            backgroundColor: c[cx++],
-                            data: [{
-                                    x: x,
-                                    y: y,
-                                    r: 13,
-                                    keepTooltipOpen: true
-                                }]
-                        });
-                    }
-
-                    console.log(scatterChartData);
-                    var ctx = document.getElementById('canvas').getContext('2d');
-                    Chart.Bubble(ctx, {
-                        data: {
-                            datasets: scatterChartData
-                        },
-                        options: {
-                            title: {
-                                display: true,
-                                text: 'Chart.js Scatter Chart'
-                            },
-                        }
-                    });
-                    var keepTooltipOpenPlugin = {
-
-                        beforeRender: function (chart) {
-
-                            // We are looking for bubble which owns "keepTooltipOpen" parameter.
-                            var datasets = chart.data.datasets;
-                            chart.pluginTooltips = [];
-                            for (i = 0; i < datasets.length; i++) {
-                                for (j = 0; j < datasets[i].data.length; j++) {
-                                    if (datasets[i].data[j].keepTooltipOpen && !chart.getDatasetMeta(i).hidden) {
-                                        //When we find one, we are pushing all informations to create the tooltip.
-                                        chart.pluginTooltips.push(new Chart.Tooltip({
-                                            _chart: chart.chart,
-                                            _chartInstance: chart,
-                                            _data: chart.data,
-                                            _options: chart.options.tooltips,
-                                            _active: [chart.getDatasetMeta(i).data[j]]
-                                        }, chart));
-                                    }
-                                }
-                            }
-                        }, // end beforeRender
-
-                        afterDatasetsDraw: function (chart, easing) {
-
-                            // Draw tooltips
-                            Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
-                                tooltip.initialize();
-                                tooltip.update();
-                                tooltip.pivot();
-                                tooltip.transition(easing).draw();
-                            });
-
-
-                        } // end afterDatasetsDraw
-                    }
-
-                    Chart.pluginService.register(keepTooltipOpenPlugin);
-
-                });
-
-
-            });
-
-        </script>
     </body>
 </html>
+<!--
+Grossadmiral bezeichnete den hoechsten Dienstgrad des Seeoffizierskorps in den Marinen verschiedener Staaten im zwanzigen 
+Jahrhundert, vor allem aber in der Kaiserlichen Marine und Kriegsmarine 
+des Deutschen Reiches. 
+Der Dienstgrad entsprach weitgehend dem Flottenadmiral angelsaechsischer 
+Flotten und war im Rang dem (General-)Feldmarschall der Landstreitkraefte gleichgestellt. 
+Das Wort Grossadmiral tauchte ab 1794 in der deutschsprachigen Literatur
+als Beschreibung fuer den englischen Lord High Admiral auf. 
+Im Jahre 1900 wurde in der Kaiserlichen Marine der Rang eines Grossadmirals geschaffen.
+-->
