@@ -1,0 +1,36 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18.08.2018, 10:25:47
+    Author     : Andrej.Schefer
+*/
+
+
+.wrapper{
+    width: 900px;
+    margin: 0 auto;
+    padding: 20px
+}
+
+textarea.text{
+    height: 300px
+}
+
+canvas{
+    width: 800px
+}
+
+#oneHot {
+    width: 400px;
+    float: left;
+    font-size: 10px;
+}
+#neighhor {
+    border: 1px solid #aeaeae;
+    width: 401px;
+    float: right;
+    padding: 10px;
+}
