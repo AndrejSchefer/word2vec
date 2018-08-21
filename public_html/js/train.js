@@ -1,18 +1,19 @@
-
 async function train() {
-    console.log('Train');
-    // alert(542);
-    //$('.loss').append('fffffff')
-    for (var i = 1; i < 100; i++) {
-        //$('.loss').append('test ' + i);
+    //console.log('Train');
+    await $('.status').append('Learn');
+
+    //await $('.loss').append('')
+    for (var i = 1; i < 10; i++) {
+        
         const response = await model.fit(tf.tensor2d(xs), tf.tensor2d(ys), {
             shuffle: true,
-            epochs: 1000, //$('#epoch').val()
+            epochs: 200, //$('#epoch').val()
         });
-
-        console.log(response.history.loss[0]);
+        
+        //console.log(response.history.loss[0]);
         ///$('.loss').append('<div>' + response.history.loss[0] + '</div>');
-        document.getElementsByClassName("loss").innerHTML = "New text!";
+        await $('.loss').append(response.history.loss[0] + '<br />');
+       
     }
 }
 
@@ -29,7 +30,7 @@ $('.learn').click(function () {
         async function myTensorTable(myDiv, myOutTensor, myCols, myTitle) {
 
             const myOutput = await myOutTensor.data()
-            var wordCord = [];
+        
             x = 1;
             y = 0;
             cord = [];
@@ -45,6 +46,9 @@ $('.learn').click(function () {
             }
             return cord;
         }
+        
+        // Get Weights from the HiddenLayer 
+        
         w = myTensorTable('test', model.getWeights()[0], 2, 'v ').then(function (data) {
             //console.log(data);
             x = 0;
@@ -66,13 +70,12 @@ $('.learn').click(function () {
             return w2b;
         });
 
-        c = ['#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#17a2b8']
+        c = ['#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#17a2b8'];
         scatterChartData = [];
         w.then(function (data) {
             //console.log(data);
             cx = 0;
             for (i in data) {
-
                 x = data[i]['x'];
                 y = data[i]['y'];
                 scatterChartData.push({
@@ -98,7 +101,7 @@ $('.learn').click(function () {
                     title: {
                         display: true,
                         text: 'word2vac Charts'
-                    },
+                    }
                 }
             });
             var keepTooltipOpenPlugin = {
@@ -139,9 +142,6 @@ $('.learn').click(function () {
             }
 
             Chart.pluginService.register(keepTooltipOpenPlugin);
-
         });
-
-
     });
 });

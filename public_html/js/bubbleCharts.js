@@ -105,4 +105,3 @@ function handleClick(evt) {
             values.keepTooltipOpen = true;
     }
 }
-;

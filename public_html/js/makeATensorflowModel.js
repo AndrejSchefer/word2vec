@@ -2,6 +2,7 @@ var model = tf.sequential();
 var xs = [];
 var ys = [];
 var bineryWords = [];
+var countWord = [];
 
 function scatter(scatterChartData) {
     console.log(scatterChartData);
@@ -25,6 +26,10 @@ function remove_stop_words(corpus) {
         ' ein ',
         ' den ',
         ' Der ',
+        ' der ',
+        ' die ',
+        ' von ',
+        ' vom ',
         ' er ',
         ' in ',
         ' vor ',
@@ -61,19 +66,43 @@ function makeLabels(sentences) {
     for (var y = 0; y < sentences.length; y++) {
         var x_achse = 1;
         for (var x = 0; x < sentences[y].length; x++) {
-            data[sentences[y][x]] = []
+            data[sentences[y][x]] = [];
             data[sentences[y][x]][0] = y_achse;
             data[sentences[y][x]][1] = x_achse;
-            x_achse++
+            x_achse++;
         }
         y_achse++;
     }
     return data;
 }
 
+function countWords(corpus) {
+    var wordTable = [];
+    for (var i = 0; i < corpus.length; i++) {
+        for (var j = 0; j < corpus[i].length; j++) {
+      
+            if (wordTable[corpus[i][j]] === 1 || wordTable[corpus[i][j]] !== undefined) {
+                wordTable[corpus[i][j]] = wordTable[corpus[i][j]] + 1;
+            } else {
+                wordTable[corpus[i][j]] = 1;
+            }
+
+        }
+    }
+    
+    console.log(wordTable);
+    
+    $.each(wordTable, function (word, counter){
+        console.log(word+' '+counter);
+    });
+    
+    return wordTable;
+}
+
 function uniquWord(corpus) {
     var word = [];
     var x = 0;
+
     for (var i = 0; i < corpus.length; i++) {
         for (var j = 0; j < corpus[i].length; j++) {
             if (word.indexOf(corpus[i][j]) === -1) {
@@ -136,17 +165,14 @@ function findNeighborWords(sentences, bineryWords) {
 function buildAModule() {
     var corpus = getText();
     var sentences = remove_stop_words(corpus);
+    countWord = countWords(sentences);
     var words = uniquWord(sentences);
     bineryWords = oneHot(words);
 
     var encodeNumberLength = 0;
-    /*
-     * $.each(bineryWords, function (key, value) {
-     console.log(key);
-     });
-     */
+    
     var fnw = findNeighborWords(sentences, bineryWords);
-    console.log(fnw);
+    
     encodeNumberLength = fnw[0]['wordEncode'].length;
     const hidden = tf.layers.dense({
         units: 2, // Number of nodes in the hidden Layer
