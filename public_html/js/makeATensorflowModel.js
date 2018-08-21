@@ -80,7 +80,7 @@ function countWords(corpus) {
     var wordTable = [];
     for (var i = 0; i < corpus.length; i++) {
         for (var j = 0; j < corpus[i].length; j++) {
-      
+
             if (wordTable[corpus[i][j]] === 1 || wordTable[corpus[i][j]] !== undefined) {
                 wordTable[corpus[i][j]] = wordTable[corpus[i][j]] + 1;
             } else {
@@ -89,13 +89,13 @@ function countWords(corpus) {
 
         }
     }
-    
+
     console.log(wordTable);
-    
-    $.each(wordTable, function (word, counter){
-        console.log(word+' '+counter);
-    });
-    
+
+    //$.each(wordTable, function (word, counter){
+    //    console.log(word+' '+counter);
+    //});
+
     return wordTable;
 }
 
@@ -136,7 +136,7 @@ function oneHot(words) {
 }
 
 function findNeighborWords(sentences, bineryWords) {
-    //console.log(sentences);    
+    //console.log(sentences);
     var data = [];
     x = 0;
     for (var i = 0; i < sentences.length; i++) {
@@ -170,12 +170,12 @@ function buildAModule() {
     bineryWords = oneHot(words);
 
     var encodeNumberLength = 0;
-    
+
     var fnw = findNeighborWords(sentences, bineryWords);
-    
+
     encodeNumberLength = fnw[0]['wordEncode'].length;
     const hidden = tf.layers.dense({
-        units: 2, // Number of nodes in the hidden Layer
+        units: 100, // Number of nodes in the hidden Layer
         inputShape: [encodeNumberLength], // Input Layer with 2 nodes
         activation: "softmax"
     });

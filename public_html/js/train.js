@@ -44,7 +44,7 @@ function train() {
 
                     const myOutput = await myOutTensor.data()
 
-                    x = 1;
+                    x = 0;
                     y = 0;
                     cord = [];
                     cord[y] = [];
@@ -52,7 +52,7 @@ function train() {
                         cord[y][x] = myOutput[myCount];
                         x++;
                         if (myCount % myCols == myCols - 1) {
-                            x = 1;
+                            x = 0;
                             y++;
                             cord[y] = [];
                         }
@@ -61,9 +61,25 @@ function train() {
                 }
 
                 // Get Weights from the HiddenLayer
-
-                w = myTensorTable('test', model.getWeights()[0], 2, 'v ').then(function (data) {
+                w = myTensorTable('test', model.getWeights()[0], 100, 'v ').then(function (data) {
                     //console.log(data);
+
+                    var opt = {};
+                    opt.epsilon = 10; // epsilon is learning rate (10 = default)
+                    opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+                    opt.dim = 2; // dimensionality of the embedding (2 = default)
+
+                    var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+
+                    // initialize data
+                    tsne.initDataDist(data);
+
+                    for (var k = 0; k < 1000; k++) {
+                        tsne.step(); // every time you call this, solution gets better
+                    }
+
+                    var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+
                     x = 0;
                     var w2b = [];
                     for (i in bineryWords) {
@@ -71,10 +87,10 @@ function train() {
                         w2b[i]['x'] = 0;
                         w2b[i]['y'] = 0;
 
-                        for (var index = 0, max = data[x].length; index < max; index++) {
+                        for (var index = 0, max = Y[x].length; index < max; index++) {
                             if (data[x][index] !== undefined) {
-                                w2b[i]['x'] = data[x][1];
-                                w2b[i]['y'] = data[x][2];
+                                w2b[i]['x'] = Y[x][0];
+                                w2b[i]['y'] = Y[x][1];
                             }
                         }
                         x++;
@@ -83,18 +99,22 @@ function train() {
                     return w2b;
                 });
 
-                c = ['#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#17a2b8'];
+                //c = ['#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#17a2b8'];
                 scatterChartData = [];
                 w.then(function (data) {
                     //console.log(data);
-                    cx = 0;
+                    //cx = 0;
                     for (i in data) {
+                        var hue = Math.floor(Math.random() * (360 - 240 + 1)) + 240;
+                        var light = Math.floor(Math.random() * (70 - 25 + 1)) + 25;
+                        var color = 'hsl('+ hue + ', 60%, ' + light + '%)';
                         x = data[i]['x'];
                         y = data[i]['y'];
                         scatterChartData.push({
                             label: i,
                             borderColor: '#000',
-                            backgroundColor: c[cx++],
+                            //backgroundColor: c[cx++],
+                            backgroundColor: color,
                             data: [{
                                     x: x,
                                     y: y,
