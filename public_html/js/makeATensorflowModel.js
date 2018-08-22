@@ -20,6 +20,7 @@ function getText() {
 }
 
 function remove_stop_words(corpus) {
+    $('.status').append('<div class="remove_stop_words state">remove stop words</div>');
     var stop_words = [
         ' wird ',
         ' eine ',
@@ -77,6 +78,8 @@ function makeLabels(sentences) {
 }
 
 function countWords(corpus) {
+    $('.status').append('<div class="remove_stop_words state">Count words</div>');
+
     var wordTable = [];
     for (var i = 0; i < corpus.length; i++) {
         for (var j = 0; j < corpus[i].length; j++) {
@@ -115,6 +118,7 @@ function uniquWord(corpus) {
 }
 
 function oneHot(words) {
+    $('.status').append('<div class="remove_stop_words state">Build oneHot</div>');
     var data = [];
     var x = 1;
     $.each(words, function (key, value) {
@@ -137,6 +141,8 @@ function oneHot(words) {
 
 function findNeighborWords(sentences, bineryWords) {
     //console.log(sentences);
+    $('.status').append('<div class="remove_stop_words state">find Neighbor Words</div>');
+
     var data = [];
     x = 0;
     for (var i = 0; i < sentences.length; i++) {
@@ -163,15 +169,17 @@ function findNeighborWords(sentences, bineryWords) {
 }
 
 function buildAModule() {
+
+    var encodeNumberLength = 0;
     var corpus = getText();
     var sentences = remove_stop_words(corpus);
     countWord = countWords(sentences);
     var words = uniquWord(sentences);
     bineryWords = oneHot(words);
 
-    var encodeNumberLength = 0;
-
     var fnw = findNeighborWords(sentences, bineryWords);
+    
+    $('.status').append('<div class="remove_stop_words state">Build the Model</div>');
 
     encodeNumberLength = fnw[0]['wordEncode'].length;
     const hidden = tf.layers.dense({
