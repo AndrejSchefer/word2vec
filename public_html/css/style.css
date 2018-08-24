@@ -16,6 +16,12 @@ h1{
     font-size: 18px; 
 }
 
+a.link {
+    color: #444;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
 h2{
     font-size: 16px; 
 }
@@ -29,6 +35,9 @@ h2{
     border-bottom: 4px solid #fff;
 }
 
+.header span {
+    font-size: 20px;
+}
 .wrapper{
     width: 1024px;
     margin: 0 auto;

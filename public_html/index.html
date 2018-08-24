@@ -1,9 +1,11 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>TODO supply a title</title>
-   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-     
+        <title>Word2Vec with tensorflow.js</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <meta content="word2vec nlp  tensorflow.js machine-learning, deep-learning" name="keywords">
+        <meta content="word2vec nlp tensorflow.js machine-learning, deep-learning" name="description">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" >
         <link href="css/style.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
@@ -15,9 +17,13 @@
 
     </head>
     <body>
-        <div class="header" >Word2Vec</div>
-        
+        <div class="header" >
+            Word2Vec with Tensorflow.js<br />
+            <span>by Andrej Schefer and Leo Bord</span>
+        </div>
         <div class="wrapper">
+            <a class="link" target="_blank" href="http://www.andrejschefer.de/">www.andrejschefer.de</a>
+
             <div class="block form">
                 <h1>Konfiguration</h1>
                 <div class="block_inner">
@@ -37,13 +43,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Text</span>
                         </div>
-                        <textarea class="text form-control" aria-label="With textarea">
-Koenig ist ein Mann.
-Prinz wird ein Koenig.
-Koenigin ist eine Frau.
-Koenig ist mit der Koenigin verheiratet.
-Prinz ist der Bruder von der Prinzessin.
-Prinzessin ist die Schwester vom Prinz.                    </textarea>
+                        <textarea class="text form-control" aria-label="With textarea">King is a man.
+Prince becomes a king.
+Queen is a woman.
+Koenig is married to the queen.
+Prince is the brother of the princess.
+Princess is the sister of the prince.</textarea>
                     </div>
                     <input class="btn btn-success learn" value="Learn" type="button">
                 </div>
@@ -60,8 +65,10 @@ Prinzessin ist die Schwester vom Prinz.                    </textarea>
                 <canvas  id="lossfunction"></canvas> 
             </div>
 
-            <canvas  id="canvas"></canvas>
-
+            <div class="block">
+                <h1>Word2Vec</h1>
+                <canvas  id="canvas"></canvas>
+            </div>
             <table class="table table-striped wordCordinaten">
             </table>
 
@@ -70,7 +77,6 @@ Prinzessin ist die Schwester vom Prinz.                    </textarea>
         </div>
         <script src="js/makeATensorflowModel.js"></script>
         <script src="js/train.js"></script>
-
     </body>
 </html>
 <!--
