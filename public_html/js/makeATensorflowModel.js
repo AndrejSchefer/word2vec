@@ -10,6 +10,22 @@ $(document).ready(function () {
         console.log(scatterChartData);
     }
 
+    function tableVisible() {
+        $('.tableOpen').on('click', function () {
+            var table = $(this).attr('table');
+            //alert(table);
+
+            if ($(this).attr('status') == 'close') {
+                $('.' + table + ' table').show()
+                $(this).attr('status', 'open');
+            } else {
+                $('.' + table + ' table').hide()
+                $(this).attr('status', 'close');
+            }
+            
+        return false;
+        });
+    }
     function getText() {
         var text = $('.text').val();
         var rowText = text.split(".");
@@ -120,7 +136,7 @@ $(document).ready(function () {
     }
 
     function oneHot(words) {
-        $('.status').append('<div class="remove_stop_words state">Build oneHot</div>');
+        $('.status').append('<div class="oneHot state"><h1>Build oneHot <a class="tableOpen" status="close" table="oneHot" href="#"><i class="fa fa-table" table="oneHot" aria-hidden="true"></i> </a> </h1> <table class="table table-striped"></table></div>');
         var data = [];
         var x = 1;
         $.each(words, function (key, value) {
@@ -135,15 +151,18 @@ $(document).ready(function () {
                 }
             }
             var table = '<tr><td>' + data[value]['text'] + '</td><td> ' + data[value]['tens'] + '</td></tr>';
-            $('.oneHot').append(table);
+            $('.oneHot table').append(table);
             x++;
         });
+        
+        tableVisible();
+        
         return data;
     }
 
     function findNeighborWords(sentences, bineryWords) {
         //console.log(sentences);
-        $('.status').append('<div class="remove_stop_words state">find Neighbor Words</div>');
+        $('.status').append('<div class="findNeighborWords state"><h1>find Neighbor Words <a class="tableOpen" status="close" table="findNeighborWords" href="#"><i class="fa fa-table" table="findNeighborWords" aria-hidden="true"></i> </a></h1> <table class="table table-striped"></table></div>');
 
         var data = [];
         x = 0;
@@ -155,7 +174,7 @@ $(document).ready(function () {
                     if (word !== neighbor) {
                         data[x] = [];
                         var table = '<tr><td>' + word + '</td><td>' + bineryWords[word]['tens'] + '</td><td>' + neighbor + '</td><td> ' + bineryWords[neighbor]['tens'] + '</td></tr>';
-                        $('.data').append(table);
+                        $('.findNeighborWords table').append(table);
                         data[x]['word'] = word;
                         data[x]['wordEncode'] = bineryWords[word]['tens'];
                         data[x]['neighbor'] = neighbor;
@@ -166,7 +185,8 @@ $(document).ready(function () {
                 }
             }
         }
-        //console.log(data);
+
+        tableVisible();
         return data;
     }
 
@@ -206,7 +226,7 @@ $(document).ready(function () {
             ys.push(fnw[key]['neighborEncode']);
         });
     }
-    
+
     function dimensionReduction(data) {
         var opt = {};
         opt.epsilon = 10; // epsilon is learning rate (10 = default)
@@ -349,7 +369,7 @@ $(document).ready(function () {
 
 
 
-    function train() {
+    function train(epochs) {
 
         $('.status').append('<div class="learn state">Learn</div>');
 
@@ -359,7 +379,7 @@ $(document).ready(function () {
             data: {
                 labels: [],
                 datasets: [{
-                        label: 'My First dataset',
+                        label: 'LossFunktion',
                         borderColor: "red",
                         data: [],
                         fill: false
@@ -371,7 +391,7 @@ $(document).ready(function () {
                             display: true,
                             scaleLabel: {
                                 display: true,
-                                labelString: 'Month'
+                                labelString: 'Epochs'
                             }
                         }],
                     yAxes: [{
@@ -384,11 +404,9 @@ $(document).ready(function () {
                 }
             }
         };
-        console.log(configLoss);
+        console.log('epochs: '+epochs);
 
         var lossChart = new Chart(ctxLoss, configLoss);
-
-
         var n = 100;
         var labls = 0;
         var losses = [];
@@ -403,7 +421,7 @@ $(document).ready(function () {
             loop: async function (index, value) {
                 const response = await model.fit(tf.tensor2d(xs), tf.tensor2d(ys), {
                     shuffle: true,
-                    epochs: $('#epoch').val()
+                    epochs: epochs 
                 });
 
                 configLoss.data.datasets[0].data.push(response.history.loss[0] * 100);
@@ -423,6 +441,7 @@ $(document).ready(function () {
     $('.learn').click(function () {
         $('.status').html('');
         buildAModule();
-        train();
+        train($('#epochs').val());
     });
+
 });

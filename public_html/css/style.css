@@ -8,6 +8,9 @@ and open the template in the editor.
     Author     : Andrej.Schefer
 */
 
+body{
+    background: #eee
+}
 
 h1{
     font-size: 18px; 
@@ -17,27 +20,44 @@ h2{
     font-size: 16px; 
 }
 
+.header {
+    background: #4BA4D9;
+    text-align: center;
+    padding: 13px;
+    color: #fff;
+    font-size: 36px;
+    border-bottom: 4px solid #fff;
+}
+
 .wrapper{
     width: 1024px;
     margin: 0 auto;
     padding: 20px
 }
 .block{
+    background: #fff;
     border: 1px solid #aeaeae;
     margin-bottom:  10px;
 }
 
+
+
 .block .block_inner{
-    padding: 10px;
+    padding: 0px;
 }
 
-.block h1{
-    border-bottom: 1px solid #aeaeae;
+.form .block_inner {
+    padding: 23px;
+}
+
+.block > h1 {
     padding: 10px;
+    background: #68C1F6;
+    color: #fff
 }
 
 .block table{
-    display: none
+    display: block
 }
 
 textarea.text{
@@ -52,8 +72,12 @@ canvas{
     margin: 10px;
     border: 1px solid #c9c9c9;
     padding: 10px;
-    background: #aeaeae;
     color: #555
+}
+
+
+.status .state table{
+    display: none
 }
 
 .status  .learn {
