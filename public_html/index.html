@@ -17,38 +17,40 @@
 
     </head>
     <body>
-        <div class="header" >
+        <div class="header navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" >
             Word2Vec with Tensorflow.js<br />
             <span>by Andrej Schefer and Leo Born</span>
         </div>
-        <div class="wrapper">
+        
+        <div class="wrapper container">
             <a class="link" target="_blank" href="http://www.andrejschefer.de/">www.andrejschefer.de</a>
 
             <div class="block form">
                 <h1>Konfiguration</h1>
                 <div class="block_inner">
-                    <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-2 ol-form-label">Activation Function</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="activation">
+                    <div class="input-group mb-3">
+                        <input type="text" value="100" class="form-control" id="hiddenUnits">
+                        <div class="input-group-append">
+                            <span  class="input-group-text" >Hidden Units</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" value="softmax" class="form-control" id="activation">
+                        <div class="input-group-append">
+                            <span  class="input-group-text" >Activation Function</span>
                         </div>
                     </div>
                     <div class="input-group mb-3">
                         <input type="text" value="100" class="form-control" id="epochs">
                         <div class="input-group-append">
-                            <span  class="input-group-text" >epochen</span>
+                            <span  class="input-group-text" >epochs</span>
                         </div>
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Text</span>
                         </div>
-                        <textarea class="text form-control" aria-label="With textarea">King is a man.
-Prince becomes a king.
-Queen is a woman.
-Koenig is married to the queen.
-Prince is the brother of the princess.
-Princess is the sister of the prince.</textarea>
+                        <textarea class="text form-control" aria-label="With textarea">King is a man. Prince becomes a king. Queen is a woman. King is married to the queen.</textarea>
                     </div>
                     <input class="btn btn-success learn" value="Learn" type="button">
                 </div>
@@ -80,6 +82,9 @@ Princess is the sister of the prince.</textarea>
     </body>
 </html>
 <!--
+Prince is the brother of the princess.
+Princess is the sister of the prince.
+
 Grossadmiral bezeichnete den hoechsten Dienstgrad des Seeoffizierskorps in den Marinen verschiedener Staaten im zwanzigen
 Jahrhundert, vor allem aber in der Kaiserlichen Marine und Kriegsmarine
 des Deutschen Reiches.

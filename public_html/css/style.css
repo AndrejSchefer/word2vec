@@ -34,14 +34,15 @@ h2{
     font-size: 36px;
     border-bottom: 4px solid #fff;
 }
-
 .header span {
     font-size: 20px;
 }
 .wrapper{
     width: 1024px;
     margin: 0 auto;
-    padding: 20px
+    padding: 20px;
+    margin-top: 80px 
+    
 }
 .block{
     background: #fff;
