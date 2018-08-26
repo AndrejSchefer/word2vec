@@ -312,9 +312,6 @@ $(document).ready(function () {
             });
             var keepTooltipOpenPlugin = {
                 beforeRender: function (chart) {
-                    // We are looking for bubble which owns "keepTooltipOpen" parameter.
-                    console.log("--------------");
-                    console.log(chart);
                     var datasets = chart.data.datasets;
                     chart.pluginTooltips = [];
                     for (i = 0; i < datasets.length; i++) {
@@ -350,12 +347,13 @@ $(document).ready(function () {
 
             ///Chart.pluginService.register(keepTooltipOpenPlugin);
         });
+        $('.word2vec').show();
     }
 
 
 
     function train(epochs) {
-        $('.status').append('<div class="learn state">Learn</div>');
+        $('.status').append('<div class="learn state">Step 6) The neuron network is learning</div>');
         var ctxLoss = document.getElementById('lossfunction').getContext('2d');
         configLoss = {
             type: 'line',
@@ -418,6 +416,7 @@ $(document).ready(function () {
     }
 
     $('.learn').click(function () {
+        $('.word2vec').hide();
         $('.status').html('');
         buildAModule();
         train($('#epochs').val());
