@@ -7,7 +7,9 @@ and open the template in the editor.
     Created on : 18.08.2018, 10:25:47
     Author     : Andrej.Schefer
 */
-
+.clear{
+    clear: both
+}
 body{
     background: #eee
 }
@@ -22,6 +24,22 @@ a.link {
     margin-bottom: 10px;
 }
 
+.links .inner {
+    border: 0px solid red;
+    width: 129px;
+    float: right;
+}
+
+.info {
+    color: #999999;
+    font-size: 10px;
+}
+
+.learn {
+    margin-top: 10px;
+    background-color: #FF4500;
+    border: 1px solid #FF4500;
+}
 h2{
     font-size: 16px; 
 }
@@ -65,13 +83,16 @@ h2{
     background: #68C1F6;
     color: #fff
 }
+.word2vec{
+   display: none;
+}
 
 .block table{
     display: block
 }
 
 textarea.text{
-    height: 300px
+    height: 200px
 }
 
 canvas{

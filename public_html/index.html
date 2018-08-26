@@ -8,6 +8,8 @@
         <meta content="word2vec nlp tensorflow.js machine-learning, deep-learning" name="description">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" >
         <link href="css/style.css" rel="stylesheet">
+        <link href="css/icofont/icofont.min.css" rel="stylesheet">
+        
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"></script>
         <script src="js/jquery.js"></script>
         <script src="js/jquery.async.js"></script>
@@ -23,8 +25,19 @@
         </div>
 
         <div class="wrapper container">
-            <a class="link" target="_blank" href="http://www.andrejschefer.de/">www.andrejschefer.de</a>
-
+            <div class="links">
+            <div class="inner">
+              <a class="link" target="_blank" href="http://www.andrejschefer.de/"><i class="icofont icofont-web"></i></a>
+              <a class="link" target="_blank" href="https://github.com/AndrejSchefer/word2vec"><i class="icofont icofont-github"></i></a>
+          
+                <a class="link" target="_blank" href="https://www.facebook.com/andrejschefer"><i class="icofont icofont-facebook"></i></a>
+                <a class="link" target="_blank" href="https://www.xing.com/profile/Andrej_Schefer"><i class="icofont icofont-xing"></i></a>
+                <a class="link" target="_blank" href="https://vk.com/id9423435"><i class="icofont icofont-vk"></i></a>
+                <a class="link" target="_blank" href="https://twitter.com/ScheferAndrej"><i class="icofont icofont-twitter"></i></a>
+                <a class="link" href="skype:andrej1838?add"><i class="icofont icofont-social-skype"></i> </a>
+            </div> 
+                <div class="clear"></div>
+            </div>
             <div class="block form">
                 <h1>Konfiguration</h1>
                 <div class="block_inner">
@@ -54,7 +67,8 @@
                         </div>
                         <textarea class="text form-control" aria-label="With textarea">King is a man. Prince becomes a king. Queen is a woman. King is married to the queen.</textarea>
                     </div>
-                    <input class="btn btn-success learn" value="Learn" type="button">
+                    
+                    <button class="btn btn-success learn" type="button"><i class="icofont-learn"></i> Learn the neuron network</button>                    
                 </div>
             </div>
 
@@ -69,7 +83,7 @@
                 <canvas  id="lossfunction"></canvas> 
             </div>
 
-            <div class="block">
+            <div class="block word2vec">
                 <h1>Word2Vec</h1>
                 <canvas  id="canvas"></canvas>
             </div>
